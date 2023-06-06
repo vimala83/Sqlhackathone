@@ -9,7 +9,7 @@ order by random() limit 10
 select CONCAT("Firstname", ' ', "Lastname") AS "full_name" from "Patients" 
 where "Lastname" like 'Ma%';
 	
-3.Write a query to get a list of patients whose RPE start is at moderate intensity.
+--3.Write a query to get a list of patients whose RPE start is at moderate intensity.
 
 Select p."Patient_ID",p."Firstname",p."Lastname"
 from "Patients" p
@@ -45,9 +45,7 @@ select
 From
    cts;
 	
-
-
-5) Display DM patient names with highest day MAP and night MAP (without using limit).
+--5) Display DM patient names with highest day MAP and night MAP (without using limit).
 
 CREATE INDEX idx_patients ON public."Patients" ("Patient_ID", "Group_ID");
 CREATE INDEX idx_blood_pressure ON public."Blood_Pressure" ("Patient_ID");
@@ -68,7 +66,7 @@ SELECT "Firstname", "Lastname", day_map, night_map
 FROM dm_patients
 WHERE rn = 1;
 
-6.Create view on table Lab Test by selecting some columns and filter data using Where condition.
+--6.Create view on table Lab Test by selecting some columns and filter data using Where condition.
 
 create or replace view bc_test_result as
 select "Lab_ID","Patient_ID","WBC","Platelets" from "Lab_Test" 
@@ -76,13 +74,13 @@ where "WBC" between 3 and 6
 
 select * from bc_test_result
 
-7.Display a list of Patient IDs and their Group whose diabetes duration is greater than 10 years.
+--7.Display a list of Patient IDs and their Group whose diabetes duration is greater than 10 years.
 
 select "Patient_ID","Group" from "Patients" join "Group" on "Patients"."Group_ID"= "Group"."Group_ID"
 where "Diabetes_Duration" > 10
 
 
-8. Write a query to list male patient ids 
+--8. Write a query to list male patient ids 
 --and their names 
 --who are above 40 years of age and less than 60 years 
 --and have Day BloodPressureSystolic above 120 and Day BloodPressureDiastolic above 80.
@@ -93,10 +91,9 @@ select p."Patient_ID","Firstname","Lastname","Age",g."Gender",bp."24Hr_Day_SBP",
 				 where g."Gender"='Male'
 				 and p."Age" between 40 and 60
 				 and bp."24Hr_Day_SBP" > 120 and bp."24Hr_Day_DBP" >80
+				 
 	
-	
-	
-9 Use a function to calculate the percentage of patients according to the lab visited per month
+--9 Use a function to calculate the percentage of patients according to the lab visited per month
 
 CREATE OR REPLACE FUNCTION calculate_lab_visit_percentage()
 RETURNS TABLE (month_name text, year integer, percentage numeric)
@@ -124,12 +121,12 @@ $$ LANGUAGE plpgsql;
 
 select * from calculate_lab_visit_percentage();
 
-10.Count of patients by first letter of firstname.
+--10.Count of patients by first letter of firstname.
 
 select left("Firstname",1) as firstletter, count(1) from "Patients" 
 group by firstletter
 
-41 write a query to get the number of patients whose urine creatinine is in a normal range (Gender wise).
+--41 write a query to get the number of patients whose urine creatinine is in a normal range (Gender wise).
 
 SELECT G."Gender", COUNT(P."Patient_ID") AS "Number of Patients"
 FROM public."Patients" P
@@ -142,7 +139,7 @@ WHERE
 GROUP BY G."Gender";
 
 
-42.Write a query to update id LB002 with the lab name Cultivate Lab
+--42.Write a query to update id LB002 with the lab name Cultivate Lab
 
 select * from "Lab_Visit"
 where "Lab_visit_ID"='LB002'
@@ -166,11 +163,11 @@ where "Firstname"= 'Gabriel'
 
 drop index "index_firstname"
 
-44.Write a query to split the lab visit date into two different columns lab_visit_date  and lab_visit_time.
+--44.Write a query to split the lab visit date into two different columns lab_visit_date  and lab_visit_time.
 
 select CAST ("Lab_Visit_Date" AS DATE) as lab_visit_date, CAST ("Lab_Visit_Date" AS TIME) as lab_visit_time from "Lab_Visit"
 
-45 Please go through the below screenshot and create the exact output. 
+--45 Please go through the below screenshot and create the exact output. 
 
 SELECT SUBSTRING("Patient_ID" FROM 2)::INTEGER AS "pat_id",
        CASE WHEN SUBSTRING("Patient_ID" FROM 2)::INTEGER % 2 = 0 THEN 'true' ELSE 'false' END AS "even",
@@ -193,24 +190,24 @@ WHERE P."Patient_ID" IN (
     WHERE "Diabetes_Duration" > 0)
 GROUP BY G."Gender";
 
-47. Write a query to display the Patient_ID, last name, and the position of the substring 'an' in the last name column for those patients who have a substring 'an'.
+--47. Write a query to display the Patient_ID, last name, and the position of the substring 'an' in the last name column for those patients who have a substring 'an'.
 
 SELECT "Patient_ID", "Lastname",
 POSITION ('an' IN "Lastname") AS "Position of 'an' in Last Name" FROM "Patients"
 WHERE "Lastname" LIKE '%an%'
 	
-48. List of patients from rows 30-40 without using the where condition.
+--48. List of patients from rows 30-40 without using the where condition.
 
 select "Firstname","Lastname" from "Patients" 
 limit 10 offset 37
 
-49. Write a query to find Average age for patients with high blood pressure
+--49. Write a query to find Average age for patients with high blood pressure
 select avg("Age") from "Blood_Pressure"
 		 join "Patients" as p on p."Patient_ID"="Blood_Pressure"."Patient_ID"
 		 where "Blood_Pressure"."24Hr_Day_SBP" > 129 and "Blood_Pressure"."24Hr_Night_SBP" >129
 		 and "Blood_Pressure"."24Hr_Day_DBP" >79 and "Blood_Pressure"."24Hr_Night_DBP" >79
 
-50.Create materialized view with no data, to display no of male and female patients.
+--50.Create materialized view with no data, to display no of male and female patients.
 
 CREATE MATERIALIZED VIEW Number_Of_Gender 
 AS
